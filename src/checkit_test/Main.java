@@ -1,12 +1,14 @@
 package checkit_test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.cloudant.client.api.CloudantClient;
 import com.cloudant.client.api.Database;
+import com.cloudant.client.api.model.Response;
 import com.google.gson.Gson;
 
 import client.Client;
@@ -34,17 +36,18 @@ public class Main {
 //		    System.out.println(db);
 //		}
 		
-		Database db = client.database("test", false);
+		Database db = client.database(API.CLOUDANT_DATABASE_NAME, false);
 		Client clientData = new Client();
 		clientData.setMac(Helper.getMac());
 		clientData.setSenderTime(Helper.getTime());
 		clientData.setSenderFormatedTime(Helper.getFormatedTime());
-		String lastInsert = db.save(clientData).getId();
+		Response lastInserted = db.save(clientData);
 		System.out.println("You have inserted the clientData");
 		
-		Client c = db.find(Client.class, lastInsert);
+		Client c = db.find(Client.class, lastInserted.getId());
 		Gson gson = new Gson();
 		System.out.println(gson.toJson(c));
+
 	}
 	
 	void doLocalPost() {
